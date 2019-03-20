@@ -1,0 +1,34 @@
+#!/bin/bash
+
+set -e
+
+# backend "s3" {
+#   bucket = "$customer-$project-terraform-state"
+#   key    = "$environment.tfstate"
+#   region = "$region"
+# }
+
+while getopts ":r:c:p:" opt; do
+  case ${opt} in
+    c)
+      customer=${OPTARG}
+      ;;
+    p)
+      project=${OPTARG}
+      ;;
+    r)
+      region=${OPTARG}
+      ;;
+    \?)
+      echo "Invalid option: -${OPTARG}" >&2
+      ;;
+  esac
+done
+
+bucket="${customer}-${project}-terraform-state"
+
+if aws s3 ls "s3://$bucket" 2>&1 | grep -q 'NoSuchBucket'
+then
+  aws s3 mb "s3://$bucket" --region ${region} > /dev/null 2>&1
+  aws s3api put-bucket-versioning --bucket $bucket --versioning-configuration Status=Enabled
+fi
