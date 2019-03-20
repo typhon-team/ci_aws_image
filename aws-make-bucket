@@ -3,12 +3,12 @@
 set -e
 
 # backend "s3" {
-#   bucket = "$customer-$project-terraform-state"
+#   bucket = "$customer-$project-$region-terraform-state"
 #   key    = "$environment.tfstate"
 #   region = "$region"
 # }
 
-while getopts ":r:c:p:" opt; do
+while getopts ":c:p:r:" opt; do
   case ${opt} in
     c)
       customer=${OPTARG}
@@ -25,7 +25,7 @@ while getopts ":r:c:p:" opt; do
   esac
 done
 
-bucket="${customer}-${project}-terraform-state"
+bucket="${customer}-${project}-${region}-terraform-state"
 
 if aws s3 ls "s3://$bucket" 2>&1 | grep -q 'NoSuchBucket'
 then
