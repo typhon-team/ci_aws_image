@@ -10,5 +10,5 @@ RUN apk -v --update add \
     apk -v --purge del py-pip && \
     rm /var/cache/apk/*
 COPY aws-make-bucket /usr/local/bin/aws-make-bucket
-RUN chown a+x /usr/local/bin/aws-make-bucket
+RUN chmod a+x /usr/local/bin/aws-make-bucket
 ENTRYPOINT [""]
